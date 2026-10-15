@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Guarantees ZERO horizontal layout shift when scrollbars appear */
+    scrollbar-gutter: stable;
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Custom subtle dark scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #070D1E;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E2D52;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #10B981;
+  }
+}
+
+/* Custom Telemetry & Glassmorphic Utilities */
+@layer utilities {
+  .glass-panel {
+    background: rgba(15, 30, 54, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .glass-panel-elevated {
+    background: rgba(22, 34, 63, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+  }
+}
