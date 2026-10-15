@@ -113,15 +113,17 @@ export const Header: React.FC = () => {
           )}
 
           {/* Quick Founder Contact Trigger */}
-          <button
-            type="button"
+          <a
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=Droneiteco@gmail.com&su=Campus%20Pilot%20Demo%20Flight%20Booking%20-%20Droneit&body=Hello%20Droneit%20Team%2C%0A%0AI%20would%20like%20to%20schedule%20a%20Campus%20Pilot%20Demo%20Flight.%0A%0AName%3A%20%0AInstitution%20%2F%20Venture%20Fund%3A%20%0AOfficial%20Email%3A%20%0APreferred%20Date%20%26%20Drop-Zone%3A%20%0A%0ABest%20regards"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsDemoBookingModalOpen(true)}
             className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-all"
-            title="Book Pilot Demo Flight"
+            title="Campus Pilot Demo Flight (Opens Droneiteco@gmail.com in Gmail)"
           >
             <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Pilot Demo</span>
-          </button>
+            <span>Campus Pilot Demo</span>
+          </a>
 
           {/* Blinkit-Style Cart Button with Count & Weight */}
           <button

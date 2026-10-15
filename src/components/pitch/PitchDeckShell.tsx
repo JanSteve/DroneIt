@@ -64,14 +64,17 @@ export const PitchDeckShell: React.FC = () => {
             </p>
           </div>
 
-          <button
-            type="button"
+          <a
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=Droneiteco@gmail.com&su=Campus%20Pilot%20Demo%20Flight%20Booking%20-%20Droneit&body=Hello%20Droneit%20Team%2C%0A%0AI%20would%20like%20to%20schedule%20a%20Campus%20Pilot%20Demo%20Flight%20for%20our%20jury%20%2F%20institution.%0A%0AName%3A%20%0AInstitution%20%2F%20Venture%20Fund%3A%20%0AOfficial%20Email%3A%20%0APreferred%20Date%20%26%20Drop-Zone%3A%20%0A%0ABest%20regards"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsDemoBookingModalOpen(true)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 active:scale-95"
+            title="Campus Pilot Demo Flight (Opens Droneiteco@gmail.com in Gmail)"
           >
             <Calendar className="w-4 h-4" />
-            <span>Schedule Jury Demo Flight</span>
-          </button>
+            <span>Campus Pilot Demo Flight</span>
+          </a>
         </div>
       </section>
 

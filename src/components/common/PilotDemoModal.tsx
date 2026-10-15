@@ -1,8 +1,46 @@
 import React, { useState } from 'react';
-import { X, Calendar, CheckCircle, ShieldCheck } from 'lucide-react';
+import { X, Calendar, CheckCircle, ShieldCheck, Mail, ExternalLink } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useToast } from '../../context/ToastContext';
 import { DEFAULT_DROP_ZONES } from '../../data/dropZonesData';
+
+export const GMAIL_RECIPIENT = 'Droneiteco@gmail.com';
+
+export function createGmailComposeUrl(
+  bookingId?: string,
+  clientName?: string,
+  clientInstitution?: string,
+  clientEmail?: string,
+  zone?: string
+): string {
+  const subject = bookingId
+    ? `Campus Pilot Demo Flight Booking - ${bookingId} (${clientInstitution || 'Jury / University'})`
+    : 'Campus Pilot Demo Flight Booking - Droneit';
+
+  const body = bookingId
+    ? `Hello Droneit Team,\n\nI would like to schedule a Campus Pilot Demo Flight.\n\nBooking ID: ${bookingId}\nName: ${clientName || ''}\nInstitution / Venture Fund: ${clientInstitution || ''}\nOfficial Email: ${clientEmail || ''}\nPreferred Drop-Zone: ${zone || 'Campus Rooftop Pad'}\n\nPlease confirm our demo flight timing.\n\nBest regards,\n${clientName || ''}`
+    : `Hello Droneit Team,\n\nI would like to schedule a Campus Pilot Demo Flight for our institution/fund.\n\nName: \nInstitution / University: \nOfficial Email: \nPreferred Date & Drop-Zone: \n\nBest regards`;
+
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${GMAIL_RECIPIENT}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+export function createMailtoComposeUrl(
+  bookingId?: string,
+  clientName?: string,
+  clientInstitution?: string,
+  clientEmail?: string,
+  zone?: string
+): string {
+  const subject = bookingId
+    ? `Campus Pilot Demo Flight Booking - ${bookingId} (${clientInstitution || 'Jury / University'})`
+    : 'Campus Pilot Demo Flight Booking - Droneit';
+
+  const body = bookingId
+    ? `Hello Droneit Team,\n\nI would like to schedule a Campus Pilot Demo Flight.\n\nBooking ID: ${bookingId}\nName: ${clientName || ''}\nInstitution / Venture Fund: ${clientInstitution || ''}\nOfficial Email: ${clientEmail || ''}\nPreferred Drop-Zone: ${zone || 'Campus Rooftop Pad'}\n\nPlease confirm our demo flight timing.\n\nBest regards,\n${clientName || ''}`
+    : `Hello Droneit Team,\n\nI would like to schedule a Campus Pilot Demo Flight for our institution/fund.\n\nName: \nInstitution / University: \nOfficial Email: \nPreferred Date & Drop-Zone: \n\nBest regards`;
+
+  return `mailto:${GMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 export const PilotDemoModal: React.FC = () => {
   const { isDemoBookingModalOpen, setIsDemoBookingModalOpen } = useApp();
@@ -44,7 +82,16 @@ export const PilotDemoModal: React.FC = () => {
     };
 
     setConfirmedBooking(result);
-    showToast(`Pilot demo confirmed! Booking ID: ${bookingId}`, 'success', 5000);
+    showToast(`Pilot demo confirmed! Booking ID: ${bookingId}. Opening Gmail...`, 'success', 5000);
+
+    // Automatically launch Gmail web compose or fallback to mailto
+    const gmailUrl = createGmailComposeUrl(bookingId, name, institution, email, preferredDropZone);
+    const mailtoUrl = createMailtoComposeUrl(bookingId, name, institution, email, preferredDropZone);
+    try {
+      window.open(gmailUrl, '_blank');
+    } catch {
+      window.location.href = mailtoUrl;
+    }
   };
 
   const handleClose = () => {
@@ -56,6 +103,8 @@ export const PilotDemoModal: React.FC = () => {
     setEmail('');
   };
 
+  const directGmailUrl = createGmailComposeUrl();
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
       <div className="relative w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 overflow-hidden">
@@ -66,8 +115,27 @@ export const PilotDemoModal: React.FC = () => {
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Campus Pilot Demo Flight</h3>
-              <p className="text-xs text-slate-500">DGCA Green Zone verified 3–5 min autonomous delivery</p>
+              <a
+                href={directGmailUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1.5 hover:text-emerald-700 transition-colors"
+                title="Directly opens Gmail compose to Droneiteco@gmail.com"
+              >
+                <h3 className="text-lg font-bold text-slate-900 group-hover:text-emerald-700">Campus Pilot Demo Flight</h3>
+                <ExternalLink className="w-4 h-4 text-emerald-600" />
+              </a>
+              <p className="text-xs text-slate-500">
+                DGCA Green Zone verified 3–5 min autonomous delivery &bull; Direct:{' '}
+                <a
+                  href={directGmailUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-emerald-700 font-bold hover:underline"
+                >
+                  Droneiteco@gmail.com
+                </a>
+              </p>
             </div>
           </div>
           <button
@@ -96,6 +164,7 @@ export const PilotDemoModal: React.FC = () => {
                 {confirmedBooking.message}
               </p>
             </div>
+
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 text-left space-y-1">
               <div className="flex justify-between">
                 <span>Designated Safe Drop-Zone:</span>
@@ -106,20 +175,56 @@ export const PilotDemoModal: React.FC = () => {
                 <span className="text-emerald-700 font-medium">Digital Sky Green Zone &lt;400ft AGL</span>
               </div>
               <div className="flex justify-between">
-                <span>Confirmation Email Sent:</span>
-                <span className="text-slate-900 font-mono">{email}</span>
+                <span>Recipient Gmail Address:</span>
+                <span className="text-slate-900 font-mono font-bold">Droneiteco@gmail.com</span>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={handleClose}
-              className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-all shadow-xs"
-            >
-              Done
-            </button>
+
+            <div className="space-y-2 pt-2">
+              <a
+                href={createGmailComposeUrl(confirmedBooking.bookingId, name, institution, email, preferredDropZone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-[0.99]"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Open in Gmail (Send to Droneiteco@gmail.com)</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+
+              <a
+                href={createMailtoComposeUrl(confirmedBooking.bookingId, name, institution, email, preferredDropZone)}
+                className="block text-center text-xs text-slate-500 hover:text-emerald-700 font-medium underline py-1"
+              >
+                Or send using default mail client (Droneiteco@gmail.com)
+              </a>
+
+              <button
+                type="button"
+                onClick={handleClose}
+                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition-all border border-slate-200"
+              >
+                Done
+              </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Direct 1-Click Gmail Action */}
+            <a
+              href={directGmailUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs transition-all shadow-xs group"
+              title="Compose email directly in Gmail"
+            >
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-emerald-600" />
+                <span>Click to Email <span className="underline decoration-emerald-500">Droneiteco@gmail.com</span> in Gmail</span>
+              </div>
+              <ExternalLink className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+
             {errorMsg && (
               <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
                 {errorMsg}
@@ -192,7 +297,7 @@ export const PilotDemoModal: React.FC = () => {
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-[0.99]"
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>Confirm & Reserve Flight Slot</span>
+                <span>Confirm &amp; Send to Droneiteco@gmail.com</span>
               </button>
             </div>
           </form>
