@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, TrendingUp, Zap, Radio, PhoneCall } from 'lucide-react';
+import { ShoppingBag, TrendingUp, Zap, Radio, PhoneCall, QrCode } from 'lucide-react';
 import { DroneitLogo } from './DroneitLogo';
 import { useApp } from '../../context/AppContext';
 import { formatSecondsToTimer } from '../../utils/formatters';
@@ -15,6 +15,7 @@ export const Header: React.FC = () => {
     flightSimulation,
     setIsFlightModalOpen,
     setIsDemoBookingModalOpen,
+    setIsQrModalOpen,
   } = useApp();
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -111,6 +112,18 @@ export const Header: React.FC = () => {
               </span>
             </button>
           )}
+
+          {/* QR Code Quick Modal Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsQrModalOpen(true)}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-all"
+            title="Scan QR Code on Phone (https://drone-it-tawny.vercel.app/)"
+            aria-label="Scan QR Code on Phone"
+          >
+            <QrCode className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="hidden md:inline">Scan</span> QR
+          </button>
 
           {/* Quick Founder Contact Trigger */}
           <a

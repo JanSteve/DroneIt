@@ -8,12 +8,13 @@ import {
   TrendingUp,
   FileText,
   Cpu,
+  QrCode,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { FounderContactCard } from './FounderContactCard';
 
 export const Footer: React.FC = () => {
-  const { mode, setMode, setActivePitchTab } = useApp();
+  const { mode, setMode, setActivePitchTab, setIsQrModalOpen } = useApp();
 
   const pitchSections = [
     { id: 'summary', name: 'Executive Summary', icon: Layers },
@@ -71,13 +72,21 @@ export const Footer: React.FC = () => {
             <p className="text-xs leading-relaxed text-slate-500">
               Autonomous 3–5 minute aerial delivery infrastructure with zero-carbon flight paths and circular packaging systems.
             </p>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              <div className="text-[10px] uppercase font-black tracking-wider text-emerald-700 mb-1">
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+              <div className="text-[10px] uppercase font-black tracking-wider text-emerald-700">
                 BBA Business Competition 2026
               </div>
               <p className="text-xs text-slate-700 font-medium">
                 Official Submission for Premier Startup Competition. Inspired by Blinkit, engineered for the sky.
               </p>
+              <button
+                type="button"
+                onClick={() => setIsQrModalOpen(true)}
+                className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold transition-all shadow-2xs hover:border-emerald-500"
+              >
+                <QrCode className="w-3.5 h-3.5 text-emerald-600" />
+                <span>📱 Scan App QR Code</span>
+              </button>
             </div>
           </div>
 

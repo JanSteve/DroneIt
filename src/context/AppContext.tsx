@@ -86,6 +86,10 @@ export interface AppContextType {
   // Pilot Demo Booking Modal State
   isDemoBookingModalOpen: boolean;
   setIsDemoBookingModalOpen: (open: boolean) => void;
+
+  // QR Code Modal State
+  isQrModalOpen: boolean;
+  setIsQrModalOpen: (open: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -456,6 +460,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Pilot Demo Booking Modal State
   const [isDemoBookingModalOpen, setIsDemoBookingModalOpen] = useState(false);
 
+  // QR Code Modal State
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+
   const contextValue = useMemo<AppContextType>(
     () => ({
       mode,
@@ -510,6 +517,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setSelectedCategory,
       isDemoBookingModalOpen,
       setIsDemoBookingModalOpen,
+      isQrModalOpen,
+      setIsQrModalOpen,
     }),
     [
       mode,
@@ -550,6 +559,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       searchQuery,
       selectedCategory,
       isDemoBookingModalOpen,
+      isQrModalOpen,
     ]
   );
 

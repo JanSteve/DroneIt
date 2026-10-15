@@ -5,6 +5,7 @@ import { Header } from './components/common/Header';
 import { MobileNav } from './components/common/MobileNav';
 import { Footer } from './components/common/Footer';
 import { PilotDemoModal } from './components/common/PilotDemoModal';
+import { QrCodeModal } from './components/common/QrCodeModal';
 import { ConsumerShell } from './components/consumer/ConsumerShell';
 import { PitchDeckShell } from './components/pitch/PitchDeckShell';
 import { FlightTrackerModal } from './components/simulation/FlightTrackerModal';
@@ -44,6 +45,7 @@ const AppContent: React.FC = () => {
 
       {/* 3. Global Modals & Dialogs */}
       <PilotDemoModal />
+      <QrCodeModal />
 
       {/* Active Flight Radar Simulation & Telemetry HUD Modal */}
       <FlightTrackerModal />
