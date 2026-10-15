@@ -1,5 +1,5 @@
 // src/components/consumer/CategoryFilter.tsx
-// High-Impact Category Filter Pill Strip with Category Icons & Badge Counts
+// High-Impact Category Filter Pill Strip with Category Icons & Badge Counts (White Theme)
 
 import React, { useMemo } from 'react';
 import {
@@ -54,7 +54,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ className = '' }
     <div
       role="tablist"
       aria-label="Product categories"
-      className={`flex items-center gap-2.5 overflow-x-auto pb-4 mb-6 scrollbar-none select-none ${className}`}
+      className={`flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none select-none ${className}`}
     >
       {CATEGORIES.map((cat) => {
         const isSelected = selectedCategory === cat;
@@ -68,19 +68,19 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ className = '' }
             aria-selected={isSelected}
             type="button"
             onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 active:scale-95 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 active:scale-95 shadow-xs ${
               isSelected
-                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 shadow-lg shadow-emerald-500/25 border border-emerald-400'
-                : 'bg-[#0F1E36]/90 border border-drone-navy-border text-slate-300 hover:text-white hover:border-slate-600 hover:bg-[#162947]'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <Icon className={`w-4 h-4 ${isSelected ? 'text-slate-950' : 'text-emerald-400'}`} />
+            <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-emerald-600'}`} />
             <span>{cat}</span>
             <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold leading-none ${
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold leading-none ${
                 isSelected
-                  ? 'bg-slate-950/25 text-slate-950'
-                  : 'bg-slate-800 text-slate-400 border border-white/5'
+                  ? 'bg-emerald-700 text-white'
+                  : 'bg-slate-100 text-slate-600 border border-slate-200'
               }`}
             >
               {count}

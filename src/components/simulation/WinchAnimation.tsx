@@ -37,20 +37,20 @@ export const WinchAnimation: React.FC<WinchAnimationProps> = ({ flight, classNam
   const isDecoupled = winchPercent >= 98 || flight.stage === 'DELIVERED';
 
   return (
-    <div className={`p-4 rounded-2xl bg-[#070D1E] border border-drone-navy-border shadow-xl space-y-3.5 select-none ${className}`}>
+    <div className={`p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3.5 select-none ${className}`}>
       {/* Header Info */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
             15m HOVER WINCH SYSTEM
           </h4>
         </div>
         <span
           className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
             isDecoupled
-              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-              : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 animate-pulse'
+              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+              : 'bg-teal-100 text-teal-800 border border-teal-200 animate-pulse'
           }`}
         >
           {isDecoupled ? 'MAGNETIC RELEASE COMPLETE' : 'STATION-KEEPING HOVER'}
@@ -203,10 +203,10 @@ export const WinchAnimation: React.FC<WinchAnimationProps> = ({ flight, classNam
       </div>
 
       {/* 3. Safety Explainer Banner for Pitch Judges */}
-      <div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/25 flex items-start gap-2.5 text-xs">
-        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-        <div className="text-slate-300 text-[11px] leading-relaxed">
-          <strong className="text-white">Zero Ground Touch Safety Architecture: </strong>
+      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2.5 text-xs">
+        <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+        <div className="text-slate-700 text-[11px] leading-relaxed">
+          <strong className="text-slate-900 font-bold">Zero Ground Touch Safety Architecture: </strong>
           Drone holds hover station-keeping at 15m. Only the ultralight Dyneema tether line lowers the insulated GreenLoop pod softly to the pad, eliminating prop-wash disturbance, pet hazards, and theft risks.
         </div>
       </div>

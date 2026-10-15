@@ -12,7 +12,7 @@ export interface HighlightTextProps {
 export const HighlightText: React.FC<HighlightTextProps> = ({
   text,
   query,
-  highlightClassName = 'bg-emerald-500/30 text-emerald-300 font-semibold px-0.5 rounded',
+  highlightClassName = 'bg-emerald-100 text-emerald-900 font-bold px-0.5 rounded',
 }) => {
   if (!query || !query.trim()) {
     return <>{text}</>;

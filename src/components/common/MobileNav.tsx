@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Search, TrendingUp, Zap, Radio, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Search, TrendingUp, Zap, Radio } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 interface MobileNavProps {
@@ -10,7 +10,6 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onSearchClick }) => {
   const {
     mode,
     setMode,
-    toggleMode,
     cart,
     totalWeightKg,
     isCartOpen,
@@ -39,7 +38,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onSearchClick }) => {
   return (
     <nav
       aria-label="Mobile Bottom Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070D1E]/95 backdrop-blur-lg border-t border-drone-navy-border px-2 pt-1 pb-[max(env(safe-area-inset-bottom,10px),10px)] select-none shadow-[0_-8px_24px_rgba(0,0,0,0.6)]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 pt-1 pb-[max(env(safe-area-inset-bottom,10px),10px)] select-none shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
     >
       <div className="max-w-md mx-auto grid grid-cols-5 items-center justify-items-center h-14">
         {/* Item 1: Catalogue / Store */}
@@ -47,7 +46,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onSearchClick }) => {
           type="button"
           onClick={() => setMode('consumer')}
           className={`flex flex-col items-center justify-center w-full min-h-[48px] py-1 transition-colors ${
-            mode === 'consumer' ? 'text-emerald-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
+            mode === 'consumer' ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-slate-900'
           }`}
           aria-label="Store Catalogue"
         >
@@ -59,76 +58,56 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onSearchClick }) => {
         <button
           type="button"
           onClick={handleSearchClick}
-          className="flex flex-col items-center justify-center w-full min-h-[48px] py-1 text-slate-400 hover:text-emerald-400 transition-colors"
+          className="flex flex-col items-center justify-center w-full min-h-[48px] py-1 text-slate-500 hover:text-slate-900 transition-colors"
           aria-label="Search Catalogue"
         >
-          <Search className="w-5 h-5 mb-0.5" />
+          <Search className="w-5 h-5 mb-0.5 text-slate-500" />
           <span className="text-[10px] tracking-tight">Search</span>
         </button>
 
-        {/* Item 3: Center Elevated Mode Toggle Button */}
-        <div className="relative -top-3 flex items-center justify-center">
-          <button
-            type="button"
-            onClick={toggleMode}
-            className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 border-2 ${
-              mode === 'consumer'
-                ? 'bg-gradient-to-tr from-emerald-600 to-teal-500 text-drone-navy border-emerald-300 shadow-glow-green'
-                : 'bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white border-cyan-300 shadow-glow-cyan'
-            }`}
-            title={`Switch to ${mode === 'consumer' ? 'Pitch Room' : 'Consumer Store'}`}
-            aria-label={`Toggle view mode. Currently ${mode}`}
-          >
-            {mode === 'consumer' ? (
-              <Zap className="w-6 h-6 stroke-[2.5]" />
-            ) : (
-              <TrendingUp className="w-6 h-6 stroke-[2.5]" />
-            )}
-          </button>
-        </div>
+        {/* Item 3: Center Flight HUD Trigger */}
+        <button
+          type="button"
+          onClick={() => setIsFlightModalOpen(true)}
+          className="relative -top-3 flex flex-col items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white shadow-md hover:bg-emerald-700 transition-transform active:scale-95"
+          aria-label="Flight Radar & Telemetry HUD"
+        >
+          <Radio className={`w-5 h-5 ${isFlightActive ? 'animate-spin-slow' : ''}`} />
+          {isFlightActive && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-amber-400 border-2 border-white animate-ping" />
+          )}
+        </button>
 
-        {/* Item 4: Pitch Deck / Flight HUD */}
-        {isFlightActive ? (
-          <button
-            type="button"
-            onClick={() => setIsFlightModalOpen(true)}
-            className="flex flex-col items-center justify-center w-full min-h-[48px] py-1 text-emerald-400 font-semibold animate-pulse"
-            aria-label="Active Flight Radar"
-          >
-            <Radio className="w-5 h-5 mb-0.5 animate-spin-slow" />
-            <span className="text-[10px] tracking-tight">Radar</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setMode('pitch')}
-            className={`flex flex-col items-center justify-center w-full min-h-[48px] py-1 transition-colors ${
-              mode === 'pitch' ? 'text-indigo-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
-            }`}
-            aria-label="Pitch Deck"
-          >
-            <TrendingUp className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] tracking-tight">Pitch</span>
-          </button>
-        )}
+        {/* Item 4: Investor Pitch Deck Mode */}
+        <button
+          type="button"
+          onClick={() => setMode('pitch')}
+          className={`flex flex-col items-center justify-center w-full min-h-[48px] py-1 transition-colors ${
+            mode === 'pitch' ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-slate-900'
+          }`}
+          aria-label="Pitch Deck Mode"
+        >
+          <TrendingUp className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px] tracking-tight">Pitch</span>
+        </button>
 
-        {/* Item 5: Cart Bottom Sheet Trigger */}
+        {/* Item 5: Cart Trigger */}
         <button
           type="button"
           onClick={() => setIsCartOpen(!isCartOpen)}
-          className="relative flex flex-col items-center justify-center w-full min-h-[48px] py-1 text-slate-400 hover:text-slate-200 transition-colors"
-          aria-label={`Cart drawer with ${totalCartCount} items`}
+          className="relative flex flex-col items-center justify-center w-full min-h-[48px] py-1 text-slate-500 hover:text-slate-900 transition-colors"
+          aria-label="Shopping Cart"
         >
           <div className="relative">
-            <ShoppingCart className="w-5 h-5 mb-0.5" />
+            <ShoppingBag className="w-5 h-5 mb-0.5" />
             {totalCartCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 px-1 min-w-[15px] h-3.5 rounded-full bg-emerald-500 text-drone-navy text-[9px] font-black flex items-center justify-center shadow">
+              <span className="absolute -top-1 -right-2 px-1 min-w-[16px] h-4 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center leading-none">
                 {totalCartCount}
               </span>
             )}
           </div>
-          <span className="text-[10px] tracking-tight font-mono">
-            {totalWeightKg > 0 ? `${totalWeightKg.toFixed(1)}k` : 'Cart'}
+          <span className="text-[10px] tracking-tight">
+            {totalWeightKg > 0 ? `${totalWeightKg.toFixed(1)}kg` : 'Cart'}
           </span>
         </button>
       </div>

@@ -79,44 +79,44 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
   return (
     <div className={`space-y-3.5 select-none font-sans ${className}`}>
       {/* 1. Large Monospaced Active Countdown & Mission Status Header */}
-      <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md">
+      <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800">
               MISSION COUNTDOWN
             </span>
           </div>
-          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700">
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
             {flight.orderId}
           </span>
         </div>
 
         <div className="flex items-baseline justify-between">
-          <div className="text-3xl sm:text-4xl font-black font-mono tracking-widest text-white">
+          <div className="text-3xl sm:text-4xl font-black font-mono tracking-widest text-slate-900">
             {formatSecondsToTimer(flight.timeRemainingSeconds)}
           </div>
           <div className="text-right">
-            <div className="text-xs font-mono font-bold text-emerald-400">
+            <div className="text-xs font-mono font-bold text-emerald-700">
               {flight.progressPercent.toFixed(0)}% COMPLETE
             </div>
-            <div className="text-[10px] font-mono text-slate-400">
+            <div className="text-[10px] font-mono text-slate-500">
               {180 - flight.timeRemainingSeconds}s elapsed
             </div>
           </div>
         </div>
 
         {/* Progress Bar Strip */}
-        <div className="w-full h-1.5 bg-slate-950 rounded-full mt-2.5 overflow-hidden border border-slate-800">
+        <div className="w-full h-2 bg-slate-100 rounded-full mt-2.5 overflow-hidden border border-slate-200">
           <div
-            className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+            className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-300 ease-out"
             style={{ width: `${Math.min(100, flight.progressPercent)}%` }}
           />
         </div>
 
         {/* Live Mission Event Log */}
-        <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-mono text-slate-300 truncate">
-          <Activity className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+        <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-mono text-slate-700 truncate">
+          <Activity className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span className="truncate">{missionMessage}</span>
         </div>
       </div>
@@ -124,36 +124,36 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
       {/* 2. Primary Aeronautical Gauges: Altitude Tape + Airspeed Cluster */}
       <div className="grid grid-cols-2 gap-3">
         {/* Left: Vertical Altitude Tape Gauge */}
-        <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 flex flex-col justify-between">
+        <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <Navigation2 className="w-3 h-3 text-cyan-400" />
+            <span className="text-[10px] font-mono font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+              <Navigation2 className="w-3 h-3 text-teal-600" />
               <span>ALTITUDE AGL</span>
             </span>
-            <span className="text-[9px] font-mono text-cyan-400">Tape (0-60m)</span>
+            <span className="text-[9px] font-mono text-teal-700 font-bold">Tape (0-60m)</span>
           </div>
 
           <div className="flex items-center gap-3 my-1">
             {/* Vertical Tape Visualizer */}
-            <div className="relative w-4 h-24 bg-slate-950 rounded border border-slate-800 overflow-hidden flex flex-col-reverse p-0.5">
+            <div className="relative w-4 h-24 bg-slate-100 rounded border border-slate-200 overflow-hidden flex flex-col-reverse p-0.5">
               {/* Target lines */}
               <div className="absolute left-0 right-0 top-[25%] border-b border-dashed border-emerald-500/60" title="45m Cruise" />
               <div className="absolute left-0 right-0 top-[75%] border-b border-dashed border-amber-500/60" title="15m Hover" />
 
               {/* Tape Level Fill */}
               <div
-                className="w-full bg-gradient-to-t from-teal-500 to-cyan-400 rounded-sm transition-all duration-150 ease-linear shadow-[0_0_6px_rgba(6,182,212,0.6)]"
+                className="w-full bg-gradient-to-t from-teal-500 to-emerald-500 rounded-xs transition-all duration-150 ease-linear"
                 style={{ height: `${altitudeTapePercent}%` }}
               />
             </div>
 
             {/* Numeric Readout */}
             <div>
-              <div className="text-2xl font-black font-mono text-white leading-none">
+              <div className="text-2xl font-black font-mono text-slate-900 leading-none">
                 {altitudeWithJitter}
-                <span className="text-sm font-normal text-slate-400 ml-0.5">m</span>
+                <span className="text-sm font-normal text-slate-500 ml-0.5">m</span>
               </div>
-              <div className="text-[10px] font-mono text-slate-400 mt-1">
+              <div className="text-[10px] font-mono text-slate-500 mt-1">
                 {flight.stage === 'DISPATCHED' && 'Climbing (+2.2 m/s)'}
                 {flight.stage === 'EN_ROUTE' && 'Cruise Hold (45m)'}
                 {flight.stage === 'APPROACHING' && 'Descent (-1.5 m/s)'}
@@ -163,36 +163,36 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
             </div>
           </div>
 
-          <div className="text-[9px] font-mono text-slate-500 border-t border-slate-800/80 pt-1 mt-1">
+          <div className="text-[9px] font-mono text-slate-500 border-t border-slate-100 pt-1 mt-1">
             Ceiling: 120m (400ft) &bull; Safe Margin: 75m
           </div>
         </div>
 
         {/* Right: Airspeed Gauge */}
-        <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 flex flex-col justify-between">
+        <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <Gauge className="w-3 h-3 text-emerald-400" />
+            <span className="text-[10px] font-mono font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+              <Gauge className="w-3 h-3 text-emerald-600" />
               <span>AIRSPEED</span>
             </span>
-            <span className="text-[9px] font-mono text-emerald-400">Cruise</span>
+            <span className="text-[9px] font-mono text-emerald-700 font-bold">Cruise</span>
           </div>
 
           <div className="my-1">
-            <div className="text-2xl font-black font-mono text-emerald-400 leading-none">
+            <div className="text-2xl font-black font-mono text-emerald-700 leading-none">
               {speedWithJitter}
-              <span className="text-sm font-normal text-slate-400 ml-0.5">km/h</span>
+              <span className="text-sm font-normal text-slate-500 ml-0.5">km/h</span>
             </div>
 
             {/* Horizontal Speed Bar */}
-            <div className="w-full h-2 bg-slate-950 rounded-full mt-2 overflow-hidden border border-slate-800">
+            <div className="w-full h-2 bg-slate-100 rounded-full mt-2 overflow-hidden border border-slate-200">
               <div
-                className="h-full bg-emerald-400 transition-all duration-150 ease-linear shadow-[0_0_8px_rgba(16,185,129,0.7)]"
+                className="h-full bg-emerald-500 transition-all duration-150 ease-linear"
                 style={{ width: `${speedBarPercent}%` }}
               />
             </div>
 
-            <div className="text-[10px] font-mono text-slate-400 mt-1.5 flex items-center justify-between">
+            <div className="text-[10px] font-mono text-slate-600 mt-1.5 flex items-center justify-between">
               <span>Ground: {(speedWithJitter * 0.98).toFixed(1)} km/h</span>
               <span className="flex items-center gap-0.5 text-slate-500">
                 <Wind className="w-2.5 h-2.5" /> 7 km/h NW
@@ -200,20 +200,20 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
             </div>
           </div>
 
-          <div className="text-[9px] font-mono text-slate-500 border-t border-slate-800/80 pt-1 mt-1">
+          <div className="text-[9px] font-mono text-slate-500 border-t border-slate-100 pt-1 mt-1">
             Target: 40 km/h &bull; Max: 65 km/h
           </div>
         </div>
       </div>
 
       {/* 3. Battery Health & Hexacopter Motor Status */}
-      <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800">
+      <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <BatteryCharging className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-[10px] font-mono font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+            <BatteryCharging className="w-3.5 h-3.5 text-emerald-600" />
             <span>POWER & PROPULSION HUD</span>
           </span>
-          <span className="text-[10px] font-mono text-emerald-400 font-bold">
+          <span className="text-[10px] font-mono text-emerald-700 font-bold">
             {flight.batteryPercent.toFixed(1)}% ({batteryVoltage}V &bull; 32°C)
           </span>
         </div>
@@ -223,13 +223,13 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
           {['M1-CW', 'M2-CCW', 'M3-CW', 'M4-CCW', 'M5-CW', 'M6-CCW'].map((motor, idx) => (
             <div
               key={motor}
-              className="py-1 px-1 rounded-lg bg-slate-950 border border-emerald-500/30 text-center"
+              className="py-1 px-1 rounded-lg bg-slate-50 border border-slate-200 text-center"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mx-auto animate-pulse" />
-              <div className="text-[8px] font-mono font-bold text-slate-300 mt-0.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mx-auto animate-pulse" />
+              <div className="text-[8px] font-mono font-bold text-slate-700 mt-0.5">
                 M{idx + 1}
               </div>
-              <div className="text-[7px] font-mono text-emerald-400">NOM</div>
+              <div className="text-[7px] font-mono text-emerald-700 font-bold">NOM</div>
             </div>
           ))}
         </div>
@@ -238,34 +238,34 @@ export const TelemetryHUD: React.FC<TelemetryHUDProps> = ({ flight, className = 
       {/* 4. Connectivity, GPS Lock & Payload Telemetry */}
       <div className="grid grid-cols-2 gap-3 text-xs font-mono">
         {/* Navigation & Mesh */}
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+        <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-2">
-            <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+            <Wifi className="w-3.5 h-3.5 text-emerald-600" />
             <div>
-              <div className="text-[10px] text-slate-400">5G BVLOS MESH</div>
-              <div className="text-white font-bold text-[11px]">{meshLatencyMs}ms &bull; 99.2%</div>
+              <div className="text-[10px] text-slate-500">5G BVLOS MESH</div>
+              <div className="text-slate-900 font-bold text-[11px]">{meshLatencyMs}ms &bull; 99.2%</div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] text-slate-400">GPS RTK</div>
-            <div className="text-emerald-400 font-bold text-[11px]">&plusmn;2.4 cm</div>
+            <div className="text-[10px] text-slate-500">GPS RTK</div>
+            <div className="text-emerald-700 font-bold text-[11px]">&plusmn;2.4 cm</div>
           </div>
         </div>
 
         {/* Payload Constraint & Verification */}
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+        <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-2">
-            <Package className="w-3.5 h-3.5 text-cyan-400" />
+            <Package className="w-3.5 h-3.5 text-teal-600" />
             <div>
-              <div className="text-[10px] text-slate-400">PAYLOAD WEIGHT</div>
-              <div className="text-white font-bold text-[11px]">
+              <div className="text-[10px] text-slate-500">PAYLOAD WEIGHT</div>
+              <div className="text-slate-900 font-bold text-[11px]">
                 {flight.totalWeightKg.toFixed(2)} kg
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] text-slate-400">SAFETY LIMIT</div>
-            <div className="text-emerald-400 font-bold text-[11px]">2.50 kg max</div>
+            <div className="text-[10px] text-slate-500">SAFETY LIMIT</div>
+            <div className="text-emerald-700 font-bold text-[11px]">2.50 kg max</div>
           </div>
         </div>
       </div>

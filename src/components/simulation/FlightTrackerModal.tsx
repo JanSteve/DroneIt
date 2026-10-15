@@ -8,6 +8,7 @@ import { TelemetryHUD } from './TelemetryHUD';
 import { WinchAnimation } from './WinchAnimation';
 import { DemoSpeedControls } from './DemoSpeedControls';
 import { soundSynth } from './SoundSynthesizer';
+import { formatSecondsToTimer } from '../../utils/formatters';
 import {
   X,
   Minimize2,
@@ -23,6 +24,12 @@ import {
   ShieldCheck,
   Eye,
   Camera,
+  Package,
+  Plane,
+  Clock,
+  Sparkles,
+  MapPin,
+  Check,
 } from 'lucide-react';
 
 export const FlightTrackerModal: React.FC = () => {
@@ -40,6 +47,7 @@ export const FlightTrackerModal: React.FC = () => {
   } = useApp();
 
   const [activeVisualizerTab, setActiveVisualizerTab] = useState<'radar' | 'winch' | 'dual'>('dual');
+  const [viewMode, setViewMode] = useState<'customer' | 'telemetry'>('customer');
   const isAudioMuted = flightSimulation.isMuted;
 
   if (!isFlightModalOpen) return null;
@@ -175,6 +183,42 @@ export const FlightTrackerModal: React.FC = () => {
     setMode('pitch');
   };
 
+  // Simple stage indicators for everyday customers
+  const customerSteps = [
+    { key: 'DISPATCHED', label: 'Packed & Dispatched', sub: 'Dark Hub #04' },
+    { key: 'EN_ROUTE', label: 'In Flight (40 km/h)', sub: 'Air Corridor 45m' },
+    { key: 'APPROACHING', label: 'Arriving Over Pad', sub: 'Decelerating' },
+    { key: 'WINCH_LOWERING', label: 'Winch Lowering', sub: 'Safe 15m Hover' },
+    { key: 'DELIVERED', label: 'Delivered!', sub: 'Safe on Pad' },
+  ];
+
+  const getStepStatus = (stepKey: string) => {
+    const order = ['DISPATCHED', 'EN_ROUTE', 'APPROACHING', 'WINCH_LOWERING', 'DELIVERED'];
+    const currentIdx = order.indexOf(flightSimulation.stage);
+    const stepIdx = order.indexOf(stepKey);
+    if (stepIdx < currentIdx) return 'completed';
+    if (stepIdx === currentIdx) return 'active';
+    return 'pending';
+  };
+
+  // Plain-English customer message
+  const getCustomerStatusMessage = () => {
+    switch (flightSimulation.stage) {
+      case 'DISPATCHED':
+        return 'Your basket is packed into an insulated GreenLoop pod. The hexacopter is ascending vertically to its 45m flight corridor.';
+      case 'EN_ROUTE':
+        return 'Cruising silently at 40 km/h in straight-line DGCA airspace above road traffic. No traffic lights, no jams.';
+      case 'APPROACHING':
+        return 'Drone has reached your building and is decelerating for precision descent to your landing pad.';
+      case 'WINCH_LOWERING':
+        return 'Drone is hovering station-keeping at 15 meters. The whisper-quiet tether cable is gently lowering your pod.';
+      case 'DELIVERED':
+        return 'Touchdown complete! Collect your order from the pad using your 4-digit pickup OTP.';
+      default:
+        return 'Drone autonomous delivery system active.';
+    }
+  };
+
   return (
     <div
       role="dialog"
@@ -182,31 +226,31 @@ export const FlightTrackerModal: React.FC = () => {
       aria-labelledby="flight-modal-title"
       className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-4 md:p-6 flex items-center justify-center animate-fade-in"
     >
-      <div className="relative w-full max-w-6xl bg-[#070D1E] rounded-3xl border border-drone-navy-border shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+      <div className="relative w-full max-w-6xl bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[94vh] text-slate-900">
         {/* 1. Modal Top Bar */}
-        <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-drone-navy-border bg-[#0B132B]/90 flex items-center justify-between gap-3 shrink-0">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-slate-200 bg-white flex items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
               <Radio className="w-5 h-5 animate-pulse" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 id="flight-modal-title" className="text-sm sm:text-base font-black text-white font-mono truncate">
+                <h3 id="flight-modal-title" className="text-sm sm:text-base font-black text-slate-900 font-mono truncate">
                   FLIGHT #{flightSimulation.orderId}
                 </h3>
                 <span
                   className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${
                     isDelivered
-                      ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/40'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                       : isWinchStage
-                      ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 animate-pulse'
-                      : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-teal-100 text-teal-800 border border-teal-200 animate-pulse'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   }`}
                 >
                   {flightSimulation.stage.replace('_', ' ')}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-mono truncate">
+              <p className="text-xs text-slate-500 font-mono truncate">
                 Origin: Koramangala Hub #04 &bull; Dest: {flightSimulation.dropZone.name}
               </p>
             </div>
@@ -217,7 +261,7 @@ export const FlightTrackerModal: React.FC = () => {
             <button
               type="button"
               onClick={handleToggleMute}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               title={isAudioMuted ? 'Unmute Audio Cues' : 'Mute Audio Cues'}
               aria-label={isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
             >
@@ -228,7 +272,7 @@ export const FlightTrackerModal: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsFlightModalOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               title="Minimize HUD to Header Pill"
               aria-label="Minimize HUD"
             >
@@ -239,7 +283,7 @@ export const FlightTrackerModal: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsFlightModalOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               title="Close Flight HUD"
               aria-label="Close Flight HUD"
             >
@@ -248,78 +292,108 @@ export const FlightTrackerModal: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. Visualizer View Switcher Bar (Radar Map / Winch Camera / Dual View) */}
-        <div className="px-4 py-2 bg-[#091024] border-b border-drone-navy-border flex items-center justify-between text-xs font-mono shrink-0">
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 hidden xs:inline">VIEWPORT:</span>
+        {/* 2. Customer View vs Judges Telemetry Mode Switcher */}
+        <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
             <button
               type="button"
-              onClick={() => setActiveVisualizerTab('dual')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                activeVisualizerTab === 'dual'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                  : 'text-slate-400 hover:text-slate-200'
+              onClick={() => setViewMode('customer')}
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all ${
+                viewMode === 'customer'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              Dual Split
+              <Package className="w-3.5 h-3.5" />
+              <span>Customer Live Tracking</span>
             </button>
+
             <button
               type="button"
-              onClick={() => setActiveVisualizerTab('radar')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                activeVisualizerTab === 'radar'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                  : 'text-slate-400 hover:text-slate-200'
+              onClick={() => setViewMode('telemetry')}
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all ${
+                viewMode === 'telemetry'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              Tactical Radar
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveVisualizerTab('winch')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                activeVisualizerTab === 'winch'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Belly Cam &amp; Winch
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Judges &amp; Pilot Telemetry HUD</span>
             </button>
           </div>
 
-          <div className="text-emerald-400 font-bold hidden sm:flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>DGCA Green Zone Corridor &bull; Automated Failsafe ON</span>
+          {viewMode === 'telemetry' && (
+            <div className="flex items-center gap-1 font-mono text-xs">
+              <span className="text-slate-500 hidden sm:inline">VIEWPORT:</span>
+              <button
+                type="button"
+                onClick={() => setActiveVisualizerTab('dual')}
+                className={`px-2 py-1 rounded-md font-bold transition-all ${
+                  activeVisualizerTab === 'dual'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Dual Split
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveVisualizerTab('radar')}
+                className={`px-2 py-1 rounded-md font-bold transition-all ${
+                  activeVisualizerTab === 'radar'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Tactical Radar
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveVisualizerTab('winch')}
+                className={`px-2 py-1 rounded-md font-bold transition-all ${
+                  activeVisualizerTab === 'winch'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Belly Cam &amp; Winch
+              </button>
+            </div>
+          )}
+
+          <div className="text-emerald-700 font-bold hidden md:flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>DGCA Green Zone Corridor &bull; Automated Failsafe Active</span>
           </div>
         </div>
 
         {/* 3. Main Modal Body (Scrollable Container) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-[#F8FAFC]">
           {/* If Flight is DELIVERED, display the prominent Delivery Confirmation Card */}
           {isDelivered && (
-            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-emerald-950/80 to-[#070D1E] border-2 border-emerald-500/60 shadow-2xl space-y-4 animate-slide-up">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-500/30 pb-4">
+            <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-emerald-500 shadow-xl space-y-4 animate-slide-up">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.5)]">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0 shadow-xs">
                     <CheckCircle2 className="w-7 h-7 animate-bounce" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl font-black text-white font-mono">
+                    <h2 className="text-lg sm:text-xl font-black text-slate-900 font-mono">
                       DELIVERY TOUCHDOWN CONFIRMED
                     </h2>
-                    <p className="text-xs text-emerald-300 font-mono">
+                    <p className="text-xs text-emerald-700 font-semibold font-mono">
                       Your order has safely decoupled at {flightSimulation.dropZone.name}
                     </p>
                   </div>
                 </div>
 
                 {/* Pickup OTP Code */}
-                <div className="bg-slate-950 p-2.5 rounded-2xl border border-emerald-500/40 text-center sm:text-right">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase tracking-widest flex items-center justify-center sm:justify-end gap-1">
-                    <KeyRound className="w-3 h-3 text-emerald-400" />
+                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center sm:text-right shadow-xs">
+                  <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest flex items-center justify-center sm:justify-end gap-1">
+                    <KeyRound className="w-3 h-3 text-emerald-600" />
                     <span>SMART POD PICKUP OTP</span>
                   </div>
-                  <div className="text-2xl font-black font-mono text-emerald-400 tracking-widest">
+                  <div className="text-2xl font-black font-mono text-emerald-700 tracking-widest">
                     DRN-{pickupOtp}
                   </div>
                 </div>
@@ -328,24 +402,24 @@ export const FlightTrackerModal: React.FC = () => {
               {/* Delivery Receipt Highlights: GreenLoop & Seed Tag Instructions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* GreenLoop Reusable Pod Return Reminder */}
-                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1.5">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs font-mono">
-                    <Repeat className="w-4 h-4" />
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs font-mono">
+                    <Repeat className="w-4 h-4 text-emerald-600" />
                     <span>GREENLOOP REUSABLE PACKAGING (₹15 REFUND)</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     This order was delivered in an insulated, circular honeycomb pod. Return it to your society’s
-                    smart drop-bin to earn <strong className="text-emerald-400">₹15 instant wallet credit</strong>.
+                    smart drop-bin to earn <strong className="text-emerald-700">₹15 instant wallet credit</strong>.
                   </p>
                 </div>
 
                 {/* Plantable Seed Tag Care Instructions */}
-                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1.5">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs font-mono">
-                    <Leaf className="w-4 h-4" />
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs font-mono">
+                    <Leaf className="w-4 h-4 text-emerald-600" />
                     <span>PLANTABLE SEED TAG ATTACHED</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     Attached is your organic Tulsi &amp; Wildflower seed tag. Moisten with 10ml of water and plant in soil
                     to grow fresh flora in your garden!
                   </p>
@@ -357,7 +431,7 @@ export const FlightTrackerModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleOrderAgain}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors flex items-center justify-center gap-2 border border-slate-300"
                 >
                   <span>Order Another Drone Basket</span>
                 </button>
@@ -365,7 +439,7 @@ export const FlightTrackerModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleExplorePitch}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-drone-navy font-black text-xs transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2"
                 >
                   <TrendingUp className="w-4 h-4" />
                   <span>Explore Investor Pitch Room &amp; Unit Economics</span>
@@ -375,71 +449,164 @@ export const FlightTrackerModal: React.FC = () => {
             </div>
           )}
 
-          {/* Primary Visualization & Telemetry Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Left Column (Radar Map or Winch Cam or Both) */}
-            <div
-              className={`space-y-4 ${
-                activeVisualizerTab === 'dual' ? 'lg:col-span-7' : 'lg:col-span-8'
-              }`}
-            >
-              {(activeVisualizerTab === 'radar' || activeVisualizerTab === 'dual') && (
-                <div>
-                  <div className="flex items-center justify-between mb-1.5 text-xs font-mono text-slate-400">
-                    <span className="flex items-center gap-1.5 text-white font-bold">
-                      <Radio className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>TACTICAL AIRSPACE RADAR</span>
-                    </span>
-                    <span className="text-[10px] text-emerald-400">DGCA CORRIDOR BRAVO</span>
+          {/* CUSTOMER SIMPLE LIVE VIEW: Clear 5-Step Progress, Friendly Messages, OTP & Map */}
+          {viewMode === 'customer' && !isDelivered && (
+            <div className="space-y-4">
+              {/* Friendly Hero Countdown Banner */}
+              <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="space-y-1.5 text-center md:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    <span>LIVE AERIAL TRANSIT</span>
                   </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                    Arriving in {formatSecondsToTimer(flightSimulation.timeRemainingSeconds)}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 max-w-xl">
+                    {getCustomerStatusMessage()}
+                  </p>
+                </div>
+
+                {/* Pickup OTP Pill */}
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-center min-w-[180px]">
+                  <div className="text-[10px] font-mono text-slate-500 font-bold uppercase tracking-wider flex items-center justify-center gap-1">
+                    <KeyRound className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>YOUR PICKUP OTP</span>
+                  </div>
+                  <div className="text-2xl font-black font-mono text-emerald-700 tracking-widest mt-0.5">
+                    DRN-{pickupOtp}
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-1">Show at {flightSimulation.dropZone.name}</div>
+                </div>
+              </div>
+
+              {/* 5-Step Progress Steps (Blinkit / Zepto / Swiggy Style) */}
+              <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                  {customerSteps.map((step, idx) => {
+                    const status = getStepStatus(step.key);
+                    return (
+                      <div
+                        key={step.key}
+                        className={`p-3 rounded-2xl border text-center transition-all ${
+                          status === 'completed'
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                            : status === 'active'
+                            ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
+                            : 'bg-slate-50 border-slate-200 text-slate-500 opacity-60'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center mb-1">
+                          {status === 'completed' ? (
+                            <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+                              <Check className="w-3.5 h-3.5" />
+                            </div>
+                          ) : (
+                            <span className="text-xs font-mono font-bold">Step {idx + 1}</span>
+                          )}
+                        </div>
+                        <div className="text-xs font-bold leading-tight">{step.label}</div>
+                        <div className={`text-[10px] mt-0.5 ${status === 'active' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                          {step.sub}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Live Vector Flight Map Preview in White Card */}
+              <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                  <span className="flex items-center gap-1.5">
+                    <Plane className="w-4 h-4 text-emerald-600" />
+                    <span>Live Air Route Map (Koramangala Dark Hub &rarr; {flightSimulation.dropZone.name})</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('telemetry')}
+                    className="text-emerald-700 hover:text-emerald-800 text-xs font-bold flex items-center gap-1"
+                  >
+                    <span>View Aeronautical Gauges</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="rounded-2xl overflow-hidden border border-slate-200">
                   <FlightRadarMap flight={flightSimulation} />
                 </div>
-              )}
+              </div>
+            </div>
+          )}
 
-              {(activeVisualizerTab === 'winch' ||
-                (activeVisualizerTab === 'dual' && (isWinchStage || isDelivered))) && (
-                <div className="animate-fade-in">
-                  <div className="flex items-center justify-between mb-1.5 text-xs font-mono text-slate-400">
-                    <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
-                      <Camera className="w-3.5 h-3.5" />
-                      <span>15m TETHER WINCH &amp; BELLY SENSOR CAM</span>
-                    </span>
-                    <span className="text-[10px] text-cyan-400 font-mono">AUTOMATED RELEASE</span>
+          {/* TELEMETRY & JUDGES MODE: Tactical Radar, Gauges, Winch Cam, Scrubber */}
+          <div className={viewMode === 'telemetry' || isDelivered ? 'space-y-4' : 'hidden'}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              {/* Left Column (Radar Map or Winch Cam or Both) */}
+              <div
+                className={`space-y-4 ${
+                  activeVisualizerTab === 'dual' ? 'lg:col-span-7' : 'lg:col-span-8'
+                }`}
+              >
+                {(activeVisualizerTab === 'radar' || activeVisualizerTab === 'dual') && (
+                  <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs">
+                    <div className="flex items-center justify-between mb-2 text-xs font-mono text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-900 font-bold">
+                        <Radio className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>TACTICAL AIRSPACE RADAR</span>
+                      </span>
+                      <span className="text-[10px] font-bold text-emerald-700">DGCA CORRIDOR BRAVO</span>
+                    </div>
+                    <div className="rounded-2xl overflow-hidden border border-slate-200">
+                      <FlightRadarMap flight={flightSimulation} />
+                    </div>
                   </div>
-                  <WinchAnimation flight={flightSimulation} />
-                </div>
-              )}
+                )}
+
+                {(activeVisualizerTab === 'winch' ||
+                  (activeVisualizerTab === 'dual' && (isWinchStage || isDelivered))) && (
+                  <div className="animate-fade-in">
+                    <div className="flex items-center justify-between mb-1.5 text-xs font-mono text-slate-600">
+                      <span className="flex items-center gap-1.5 text-teal-700 font-bold">
+                        <Camera className="w-3.5 h-3.5 text-teal-600" />
+                        <span>15m TETHER WINCH &amp; BELLY SENSOR CAM</span>
+                      </span>
+                      <span className="text-[10px] text-teal-700 font-mono font-bold">AUTOMATED RELEASE</span>
+                    </div>
+                    <WinchAnimation flight={flightSimulation} />
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column (Aeronautical Telemetry HUD Gauges) */}
+              <div
+                className={`space-y-4 ${
+                  activeVisualizerTab === 'dual' ? 'lg:col-span-5' : 'lg:col-span-4'
+                }`}
+              >
+                <TelemetryHUD flight={flightSimulation} />
+
+                {/* Show Winch Animation on desktop if not yet visible */}
+                {activeVisualizerTab === 'dual' && !isWinchStage && !isDelivered && (
+                  <div className="opacity-80 hover:opacity-100 transition-opacity">
+                    <div className="text-[10px] font-mono text-slate-500 mb-1 flex items-center justify-between">
+                      <span>STAGE 4 PREVIEW: WINCH SYSTEM</span>
+                      <span className="text-slate-400 font-bold">Standby</span>
+                    </div>
+                    <WinchAnimation flight={flightSimulation} />
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Right Column (Aeronautical Telemetry HUD Gauges) */}
-            <div
-              className={`space-y-4 ${
-                activeVisualizerTab === 'dual' ? 'lg:col-span-5' : 'lg:col-span-4'
-              }`}
-            >
-              <TelemetryHUD flight={flightSimulation} />
-
-              {/* Show Winch Animation on desktop if not yet visible */}
-              {activeVisualizerTab === 'dual' && !isWinchStage && !isDelivered && (
-                <div className="opacity-75 hover:opacity-100 transition-opacity">
-                  <div className="text-[10px] font-mono text-slate-400 mb-1 flex items-center justify-between">
-                    <span>STAGE 4 PREVIEW: WINCH SYSTEM</span>
-                    <span className="text-slate-500">Standby</span>
-                  </div>
-                  <WinchAnimation flight={flightSimulation} />
-                </div>
-              )}
-            </div>
+            {/* Competition Pitch Demo Speed Controls */}
+            <DemoSpeedControls
+              flight={flightSimulation}
+              onSetMultiplier={setSpeedMultiplier}
+              onJumpToStage={handleJumpToStage}
+              onScrubProgress={handleScrubProgress}
+              onResetFlight={resetFlightSimulation}
+            />
           </div>
-
-          {/* 4. Competition Pitch Demo Speed Controls */}
-          <DemoSpeedControls
-            flight={flightSimulation}
-            onSetMultiplier={setSpeedMultiplier}
-            onJumpToStage={handleJumpToStage}
-            onScrubProgress={handleScrubProgress}
-            onResetFlight={resetFlightSimulation}
-          />
         </div>
       </div>
     </div>

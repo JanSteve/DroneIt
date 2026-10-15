@@ -13,7 +13,7 @@ const AppContent: React.FC = () => {
   const { mode } = useApp();
 
   return (
-    <div className="min-h-screen bg-drone-navy text-slate-100 flex flex-col antialiased selection:bg-drone-green selection:text-drone-navy">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
       {/* 1. Rigid Zero-CLS Fixed-Height Header */}
       <Header />
 

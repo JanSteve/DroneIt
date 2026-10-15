@@ -1,5 +1,5 @@
 // src/components/consumer/DropZoneSelector.tsx
-// 4 DGCA Safe Drop-Zone Selection Interface with Elevation, Mechanics & Coordinates
+// 4 DGCA Safe Drop-Zone Selection Interface (White Format)
 
 import React from 'react';
 import { Building2, Users, Trees, Anchor, MapPin, CheckCircle, Navigation } from 'lucide-react';
@@ -35,14 +35,14 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
   if (variant === 'compact') {
     const Icon = ZONE_ICONS[selectedDropZone.id] || MapPin;
     return (
-      <div className={`p-3 rounded-xl bg-slate-900/80 border border-drone-navy-border flex items-center justify-between gap-3 ${className}`}>
+      <div className={`p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-3 shadow-xs ${className}`}>
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
             <Icon className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="text-xs font-semibold text-white truncate">{selectedDropZone.name}</div>
-            <div className="text-[10px] text-slate-400 font-mono">
+            <div className="text-xs font-bold text-slate-900 truncate">{selectedDropZone.name}</div>
+            <div className="text-[10px] text-slate-500 font-mono">
               {selectedDropZone.deliveryType === 'touchdown' ? 'Touchdown Pad (+35m)' : 'Winch Station (15m Hover)'}
             </div>
           </div>
@@ -54,11 +54,11 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
             const z = DEFAULT_DROP_ZONES.find((x) => x.id === e.target.value);
             if (z) handleSelect(z);
           }}
-          className="text-xs bg-slate-800 border border-slate-700 text-emerald-400 rounded-lg px-2 py-1 font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
+          className="text-xs bg-slate-50 border border-slate-300 text-slate-800 rounded-lg px-2 py-1 font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer"
           aria-label="Change Safe Drop Point"
         >
           {DEFAULT_DROP_ZONES.map((zone) => (
-            <option key={zone.id} value={zone.id} className="bg-slate-900 text-white">
+            <option key={zone.id} value={zone.id} className="bg-white text-slate-900">
               {zone.name}
             </option>
           ))}
@@ -80,8 +80,8 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
               onClick={() => handleSelect(zone)}
               className={`p-3.5 rounded-2xl border text-left transition-all duration-200 relative flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#0E223D] border-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500'
-                  : 'bg-[#0F1E36]/90 border-drone-navy-border hover:border-emerald-500/40 hover:bg-[#122340]'
+                  ? 'bg-emerald-50/70 border-emerald-500 shadow-sm ring-1 ring-emerald-500'
+                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
               <div>
@@ -89,51 +89,42 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
                   <div
                     className={`w-8 h-8 rounded-xl flex items-center justify-center ${
                       isSelected
-                        ? 'bg-emerald-500 text-drone-navy font-bold'
-                        : 'bg-slate-800 text-slate-300'
+                        ? 'bg-emerald-600 text-white font-bold'
+                        : 'bg-slate-100 text-slate-600'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                   </div>
                   {isSelected && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 font-mono">
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 font-mono">
                       <CheckCircle className="w-3.5 h-3.5" />
                       SELECTED
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-sm font-bold text-white mb-1">{zone.name}</h4>
-                <p className="text-[11px] text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                <h4 className="text-sm font-bold text-slate-900 mb-1">{zone.name}</h4>
+                <p className="text-[11px] text-slate-500 line-clamp-2 mb-3 leading-relaxed">
                   {zone.description}
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-slate-800/80 space-y-1.5 text-[10px] font-mono">
+              <div className="pt-2 border-t border-slate-100 space-y-1.5 text-[10px] font-mono">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-500">Method:</span>
                   <span
                     className={`px-1.5 py-0.2 rounded font-semibold ${
                       zone.deliveryType === 'touchdown'
-                        ? 'bg-emerald-500/15 text-emerald-300'
-                        : 'bg-cyan-500/15 text-cyan-300'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-blue-100 text-blue-800'
                     }`}
                   >
-                    {zone.deliveryType === 'touchdown' ? 'Touchdown' : '15m Winch Tether'}
+                    {zone.deliveryType === 'touchdown' ? 'Touchdown' : '15m Winch'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-slate-400">
+                <div className="flex items-center justify-between text-slate-600">
                   <span>Hover Altitude:</span>
-                  <span className="text-white font-bold">{zone.hoverAltitudeMeters}m AGL</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-500 text-[9px]">
-                  <span className="flex items-center gap-1">
-                    <Navigation className="w-2.5 h-2.5" />
-                    GPS:
-                  </span>
-                  <span>
-                    {zone.coordinates.x.toFixed(4)}°E, {zone.coordinates.y.toFixed(4)}°N
-                  </span>
+                  <span className="text-slate-900 font-bold">{zone.hoverAltitudeMeters}m</span>
                 </div>
               </div>
             </button>
@@ -146,12 +137,12 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
   // Default: Dropdown Variant (for Hero banner)
   const CurrentIcon = ZONE_ICONS[selectedDropZone.id] || MapPin;
   return (
-    <div className={`p-4 rounded-2xl bg-[#0B132B]/90 border border-drone-navy-border shadow-xl space-y-2.5 ${className}`}>
+    <div className={`p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 ${className}`}>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-400 font-medium">Safe Drop Point</span>
-        <span className="text-emerald-400 font-mono flex items-center gap-1 text-[11px]">
+        <span className="text-slate-600 font-semibold">Drop-Zone Landing Pad</span>
+        <span className="text-emerald-700 font-bold font-mono flex items-center gap-1 text-[11px]">
           <MapPin className="w-3 h-3" />
-          DGCA Verified
+          Verified Pad
         </span>
       </div>
 
@@ -162,12 +153,12 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
             const z = DEFAULT_DROP_ZONES.find((x) => x.id === e.target.value);
             if (z) handleSelect(z);
           }}
-          className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer appearance-none pr-8"
+          className="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer appearance-none pr-8 shadow-2xs"
           aria-label="Select Safe Drop Zone"
         >
           {DEFAULT_DROP_ZONES.map((zone) => (
-            <option key={zone.id} value={zone.id} className="bg-slate-900 text-white">
-              {zone.name} ({zone.deliveryType === 'touchdown' ? 'Touchdown Pad' : '15m Winch Lowering'})
+            <option key={zone.id} value={zone.id} className="bg-white text-slate-900">
+              {zone.name} ({zone.deliveryType === 'touchdown' ? 'Touchdown Pad' : '15m Soft Winch Drop'})
             </option>
           ))}
         </select>
@@ -176,11 +167,11 @@ export const DropZoneSelector: React.FC<DropZoneSelectorProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
         <div className="flex items-center gap-1.5">
-          <CurrentIcon className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Station Altitude:</span>
-          <span className="font-mono text-white font-bold">{selectedDropZone.hoverAltitudeMeters}m</span>
+          <CurrentIcon className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Altitude:</span>
+          <span className="font-mono text-slate-800 font-bold">{selectedDropZone.hoverAltitudeMeters}m</span>
         </div>
         <span className="text-[10px] font-mono text-slate-500">
           {selectedDropZone.coordinates.x.toFixed(4)}°E, {selectedDropZone.coordinates.y.toFixed(4)}°N
