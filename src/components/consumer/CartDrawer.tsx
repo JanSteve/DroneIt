@@ -326,14 +326,25 @@ export const CartDrawer: React.FC = () => {
           {/* Cart Footer / Checkout Action */}
           {cart.length > 0 && (
             <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 space-y-2.5">
-              <button
-                type="button"
-                onClick={handleCheckout}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm sm:text-base shadow-md transition-all active:scale-98"
-              >
-                <span>Proceed to 3-Min Air Delivery</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
+              {isOverweight && splitResolution === 'standard_drone' ? (
+                <button
+                  type="button"
+                  onClick={() => setSplitOrderModalOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-extrabold text-sm sm:text-base shadow-md transition-all active:scale-98 animate-pulse"
+                >
+                  <ShieldAlert className="w-4 h-4" />
+                  <span>Resolve Overweight Payload (Split / EV)</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleCheckout}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm sm:text-base shadow-md transition-all active:scale-98"
+                >
+                  <span>Proceed to 3-Min Air Delivery</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+              )}
               <p className="text-[11px] text-center text-slate-500 font-sans">
                 🔒 Safe Tether Winch Drop at verified pad • 100% DGCA Green Zone
               </p>

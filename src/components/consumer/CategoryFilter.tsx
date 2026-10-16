@@ -68,7 +68,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ className = '' }
             aria-selected={isSelected}
             type="button"
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 active:scale-95 shadow-xs ${
+            className={`px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 active:scale-95 shadow-xs ${
               isSelected
                 ? 'bg-emerald-600 text-white shadow-sm'
                 : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900'
